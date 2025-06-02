@@ -1,0 +1,23 @@
+<!-- filepath: c:\Users\lucas\Desktop\FACUL\STR2025\templates\buy.html -->
+{% extends "layout.html" %}
+
+{% block title %}
+    Buy
+{% endblock %}
+
+{% block main %}
+    <form action="/buy" method="post">
+        <div class="mb-3">
+            Animal:
+            <select name="symbol">
+                {% for symbol in symbols %}
+                    <option value="{{symbol.symbol}}">{{symbol.symbol}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="shares" placeholder="Shares" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Buy</button>
+    </form>
+{% endblock %}
