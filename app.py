@@ -23,7 +23,7 @@ Session(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="GFCqy19F5JPTmf!",  # Retrieve MySQL password from environment variable
+    password=os.getenv("MYSQL_PASSWORD"),
     database="petplus"
 )
 
