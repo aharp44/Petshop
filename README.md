@@ -1,66 +1,76 @@
-# README for STR2025 Finance Application
+# PetPlus Petshop - Sistema de Gestão
 
-## Project Overview
-STR2025 is a web-based finance application built using Flask. It allows users to manage their stock portfolio, including functionalities for buying and selling shares, viewing transaction history, and checking stock quotes.
+## Visão Geral do Projeto
+PetPlus é um sistema web para gestão de petshop desenvolvido em Flask. Ele permite o gerenciamento completo de clientes, pets, produtos, funcionários e vendas, com funcionalidades CRUD integradas ao banco de dados MySQL.
 
-## Features
-- User registration and login
-- Buy and sell shares of stocks
-- View portfolio with current cash and total cash
-- Transaction history display
-- Stock quote lookup
+## Funcionalidades
+- Cadastro, edição e exclusão de clientes
+- Cadastro, edição e exclusão de pets (vinculados a clientes)
+- Cadastro, edição e exclusão de produtos (com categorias)
+- Cadastro, edição e exclusão de funcionários
+- Cadastro, edição e exclusão de vendas (vinculando clientes e funcionários)
+- Visualização de listas e detalhes de cada entidade
+- Autenticação de usuários (login e logout)
+- Interface responsiva com Bootstrap
 
-## Technologies Used
-- Flask: A lightweight WSGI web application framework.
-- MySQL: A relational database management system for storing user and stock data.
-- HTML/CSS: For front-end design and layout.
-- Bootstrap: For responsive design.
+## Tecnologias Utilizadas
+- **Flask**: Framework web em Python
+- **MySQL**: Banco de dados relacional
+- **HTML/CSS**: Estrutura e estilo das páginas
+- **Bootstrap**: Design responsivo e componentes visuais
 
-## Setup Instructions
+## Instruções de Instalação
 
-### Prerequisites
+### Pré-requisitos
 - Python 3.x
 - MySQL Server
-- MySQL Connector for Python
+- MySQL Connector para Python (`mysql-connector-python`)
 
-### Installation
-1. Clone the repository:
+### Instalação
+1. Clone o repositório:
    ```
    git clone <repository-url>
-   cd STR2025
+   cd Petshop
    ```
 
-2. Create a virtual environment (optional but recommended):
+2. Crie um ambiente virtual (opcional, mas recomendado):
    ```
    python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   venv\Scripts\activate  # No Windows
+   # ou
+   source venv/bin/activate  # No Linux/Mac
    ```
 
-3. Install the required packages:
+3. Instale as dependências:
    ```
    pip install -r requirements.txt
    ```
 
-4. Set up the MySQL database:
-   - Ensure that your MySQL server is running.
-   - Create a database named `finance`.
-   - Update the database connection settings in `app.py` to match your MySQL configuration.
+4. Configure o banco de dados MySQL:
+   - Certifique-se de que o MySQL está rodando.
+   - Execute o script `MySQL.sql` para criar as tabelas:
+     ```
+     mysql -u root -p < MySQL.sql
+     ```
+   - Ajuste as configurações de conexão no início do arquivo `app.py` conforme seu usuário e senha do MySQL.
 
-### Running the Application
-1. Start the Flask application:
+### Executando a Aplicação
+1. Inicie o servidor Flask:
    ```
    python app.py
    ```
 
-2. Open your web browser and go to `http://127.0.0.1:5000`.
+2. Acesse no navegador: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-## Usage
-- Register a new account or log in with an existing account.
-- Use the navigation bar to access different functionalities such as buying stocks, viewing your portfolio, and checking stock quotes.
+## Uso
+- Faça login ou registre-se.
+- Utilize o menu para acessar clientes, pets, produtos, funcionários e vendas.
+- Realize operações de cadastro, edição e exclusão conforme necessário.
 
-## Notes
-- Ensure that the MySQL server is running and the database is created before running the application.
-- Modify the `requirements.txt` to include `mysql-connector-python` for MySQL support.
+## Observações
+- O banco de dados deve estar criado e acessível antes de rodar a aplicação.
+- O arquivo `requirements.txt` deve conter `flask`, `flask-session`, `mysql-connector-python` e outras dependências necessárias.
+- As tabelas do banco de dados estão descritas no arquivo `MySQL.sql`.
 
-## License
-This project is licensed under the MIT License.
+## Licença
+Não há informações sobre a licença deste projeto. Certifique-se de verificar as permissões de uso e distribuição.
