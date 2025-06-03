@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}{{ 'Editar' if venda else 'Nova' }} Venda{% endblock %}
+{% block main %}
+<form method="post">
+    <div class="mb-3">
+        <label>Cliente</label>
+        <select class="form-control" name="cliente_id">
+            {% for cliente in clientes %}
+                <option value="{{ cliente.id }}" {% if venda and venda.customer_id == cliente.id %}selected{% endif %}>{{ cliente.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Funcionário</label>
+        <select class="form-control" name="funcionario_id">
+            {% for funcionario in funcionarios %}
+                <option value="{{ funcionario.id }}" {% if venda and venda.employee_id == funcionario.id %}selected{% endif %}>{{ funcionario.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Data</label>
+        <input class="form-control" name="data" type="datetime-local" value="{{ venda.date if venda }}">
+    </div>
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a href="{{ url_for('vendas') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

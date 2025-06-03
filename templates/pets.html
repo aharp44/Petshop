@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Pets{% endblock %}
+{% block main %}
+<a href="{{ url_for('novo_pet') }}" class="btn btn-success mb-3">Novo Pet</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th><th>Espécie</th><th>Raça</th><th>Idade</th><th>Dono</th><th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pet in pets %}
+        <tr>
+            <td>{{ pet.name }}</td>
+            <td>{{ pet.species }}</td>
+            <td>{{ pet.breed }}</td>
+            <td>{{ pet.age }}</td>
+            <td>
+                {% if pet.owner_id %}
+                    {{ pet.owner_id }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('editar_pet', id=pet.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ url_for('excluir_pet', id=pet.id) }}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

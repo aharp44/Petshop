@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}{{ 'Editar' if pet else 'Novo' }} Pet{% endblock %}
+{% block main %}
+<form method="post">
+    <div class="mb-3">
+        <input class="form-control" name="nome" placeholder="Nome" value="{{ pet.name if pet }}">
+    </div>
+    <div class="mb-3">
+        <input class="form-control" name="especie" placeholder="Espécie" value="{{ pet.species if pet }}">
+    </div>
+    <div class="mb-3">
+        <input class="form-control" name="raca" placeholder="Raça" value="{{ pet.breed if pet }}">
+    </div>
+    <div class="mb-3">
+        <input class="form-control" name="idade" placeholder="Idade" value="{{ pet.age if pet }}">
+    </div>
+    <div class="mb-3">
+        <select class="form-control" name="dono_id">
+            <option value="">Selecione o Dono</option>
+            {% for cliente in clientes %}
+                <option value="{{ cliente.id }}" {% if pet and pet.owner_id == cliente.id %}selected{% endif %}>{{ cliente.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a href="{{ url_for('pets') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Confirmar Exclusão{% endblock %}
+{% block main %}
+<p>Tem certeza que deseja excluir <b>{{ objeto.name or objeto.nome }}</b>?</p>
+<form method="post">
+    <button class="btn btn-danger" type="submit">Sim, excluir</button>
+    <a href="{{ voltar_url }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\lucas\Desktop\FACUL\STR2025\templates\register.html -->
 {% extends "layout.html" %}
 
 {% block title %}
@@ -6,16 +5,19 @@
 {% endblock %}
 
 {% block main %}
+<div class="auth-container">
+    <h2>Criar Conta</h2>
     <form action="/register" method="post">
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Usuário" type="text">
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+            <input class="form-control" name="password" placeholder="Senha" type="password">
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm password" type="password">
+            <input class="form-control" name="confirmation" placeholder="Confirmar senha" type="password">
         </div>
-        <button class="btn btn-primary" type="submit">Register</button>
+        <button class="btn btn-primary" type="submit">Registrar</button>
     </form>
+</div>
 {% endblock %}

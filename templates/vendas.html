@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Vendas{% endblock %}
+{% block main %}
+<a href="{{ url_for('nova_venda') }}" class="btn btn-success mb-3">Nova Venda</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th><th>Data</th><th>Cliente</th><th>Funcionário</th><th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venda in vendas %}
+        <tr>
+            <td>{{ venda.id }}</td>
+            <td>{{ venda.date }}</td>
+            <td>{{ venda.cliente }}</td>
+            <td>{{ venda.funcionario }}</td>
+            <td>
+                <a href="{{ url_for('editar_venda', id=venda.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ url_for('excluir_venda', id=venda.id) }}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

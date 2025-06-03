@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Funcionários{% endblock %}
+{% block main %}
+<a href="{{ url_for('novo_funcionario') }}" class="btn btn-success mb-3">Novo Funcionário</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th><th>Cargo</th><th>Data de Contratação</th><th>Salário</th><th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for funcionario in funcionarios %}
+        <tr>
+            <td>{{ funcionario.name }}</td>
+            <td>{{ funcionario.role }}</td>
+            <td>{{ funcionario.hire_date }}</td>
+            <td>{{ funcionario.salary | usd }}</td>
+            <td>
+                <a href="{{ url_for('editar_funcionario', id=funcionario.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ url_for('excluir_funcionario', id=funcionario.id) }}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

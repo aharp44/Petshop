@@ -1,4 +1,76 @@
 /* filepath: c:\Users\lucas\Desktop\FACUL\STR2025\static\styles.css */
+body {
+    background: #fdfdfd;
+}
+
+.card {
+    background: #fcf0a1;
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(255, 160, 66, 0.18), 0 2px 8px rgba(252, 240, 161, 0.10);
+    border: 2px solid #ffa042;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.15s;
+    margin-bottom: 24px;
+}
+
+.card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(255, 160, 66, 0.22), 0 4px 16px rgba(252, 240, 161, 0.13);
+}
+
+.card-img-top {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 18px auto 0 auto;
+    display: block;
+}
+
+.card-title {
+    font-weight: bold;
+    color: #ffa042;
+    margin-top: 12px;
+    margin-bottom: 10px;
+    font-size: 1.55rem;
+}
+
+.card-text {
+    color: #444;
+    font-size: 1.05rem;
+}
+
+.btn-primary {
+    background: #ffa042;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background: #fcf0a1;
+    color: #ffa042;
+    border: 1px solid #ffa042;
+}
+
+.table {
+    background: #fdfdfd;
+}
+
+.table thead {
+    background: #fcf0a1;
+    color: #ffa042;
+    font-weight: bold;
+}
+
+.table-bordered th, .table-bordered td {
+    border-color: #ffa042 !important;
+}
+
 nav .navbar-brand {
     font-size: xx-large;
 }
@@ -14,4 +86,57 @@ nav .navbar-brand .yellow {
 }
 nav .navbar-brand .green {
     color: #2e944b;
+}
+
+/* Melhorias para páginas de autenticação */
+.auth-container {
+    max-width: 400px;
+    margin: 60px auto 0 auto;
+    padding: 32px 28px 24px 28px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(83,127,190,0.10);
+    border: 1px solid #e3e3e3;
+}
+
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #537fbe;
+    font-weight: 600;
+}
+
+.auth-container .form-control {
+    margin-bottom: 18px;
+    font-size: 1.1rem;
+    padding: 10px 12px;
+}
+
+.auth-container .btn-primary {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 10px 0;
+    margin-top: 8px;
+}
+
+@media (max-width: 500px) {
+    .auth-container {
+        padding: 18px 8px 16px 8px;
+    }
+}
+
+@media (max-width: 991px) {
+    .card {
+        min-height: 320px;
+    }
+}
+@media (max-width: 767px) {
+    .card {
+        min-height: 260px;
+    }
+}
+@media (max-width: 575px) {
+    .card {
+        min-height: 220px;
+    }
 }

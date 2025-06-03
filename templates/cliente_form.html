@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}{{ 'Editar' if cliente else 'Novo' }} Cliente{% endblock %}
+{% block main %}
+<form method="post">
+    <div class="mb-3">
+        <input class="form-control" name="nome" placeholder="Nome" value="{{ cliente.name if cliente }}">
+    </div>
+    <div class="mb-3">
+        <input class="form-control" name="email" placeholder="Email" value="{{ cliente.email if cliente }}">
+    </div>
+    <div class="mb-3">
+        <input class="form-control" name="telefone" placeholder="Telefone" value="{{ cliente.phone if cliente }}">
+    </div>
+    <div class="mb-3">
+        <input class="form-control" name="endereco" placeholder="Endereço" value="{{ cliente.address if cliente }}">
+    </div>
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

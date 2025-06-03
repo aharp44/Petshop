@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Produtos{% endblock %}
+{% block main %}
+<a href="{{ url_for('novo_produto') }}" class="btn btn-success mb-3">Novo Produto</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Categorias</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produto in produtos %}
+        <tr>
+            <td>{{ produto.name }}</td>
+            <td>{{ produto.description }}</td>
+            <td>{{ produto.price | usd }}</td>
+            <td>{{ produto.stock }}</td>
+            <td>
+                {% if produto.categorias %}
+                    {{ produto.categorias | join(', ') }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('editar_produto', id=produto.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ url_for('excluir_produto', id=produto.id) }}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

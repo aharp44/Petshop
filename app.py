@@ -2,7 +2,7 @@ import os
 import datetime
 import mysql.connector
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -23,7 +23,7 @@ Session(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="admin",           # TROCAR POR SUA SENHA DO MYSQL
+    password="GFCqy19F5JPTmf!",           # TROCAR POR SUA SENHA DO MYSQL
     database="petplus"
 )
 
@@ -285,3 +285,307 @@ def sell():
         symbols = db.cursor()
         symbols.execute("SELECT symbol FROM shares WHERE userId = %s", (session["user_id"],))
         return render_template("sell.html", symbols=symbols.fetchall())
+    
+    from flask import url_for
+
+@app.route("/clientes")
+@login_required
+def clientes():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM customers")
+    clientes = cursor.fetchall()
+    return render_template("clientes.html", clientes=clientes)
+
+@app.route("/clientes/novo", methods=["GET", "POST"])
+@login_required
+def novo_cliente():
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+        endereco = request.form["endereco"]
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO customers (name, email, phone, address) VALUES (%s, %s, %s, %s)", (nome, email, telefone, endereco))
+        db.commit()
+        return redirect(url_for('clientes'))
+    return render_template("cliente_form.html", cliente=None)
+
+@app.route("/clientes/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_cliente(id):
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+        endereco = request.form["endereco"]
+        cursor.execute("UPDATE customers SET name=%s, email=%s, phone=%s, address=%s WHERE id=%s", (nome, email, telefone, endereco, id))
+        db.commit()
+        return redirect(url_for('clientes'))
+    cursor.execute("SELECT * FROM customers WHERE id=%s", (id,))
+    cliente = cursor.fetchone()
+    return render_template("cliente_form.html", cliente=cliente)
+
+@app.route("/clientes/excluir/<int:id>", methods=["GET", "POST"])
+@login_required
+def excluir_cliente(id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM customers WHERE id=%s", (id,))
+    cliente = cursor.fetchone()
+    if request.method == "POST":
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM customers WHERE id=%s", (id,))
+        db.commit()
+        return redirect(url_for('clientes'))
+    return render_template("confirmar_exclusao.html", objeto=cliente, voltar_url=url_for('clientes'))
+
+@app.route("/pets")
+@login_required
+def pets():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM pets")
+    pets = cursor.fetchall()
+    return render_template("pets.html", pets=pets)
+
+@app.route("/pets/novo", methods=["GET", "POST"])
+@login_required
+def novo_pet():
+    if request.method == "POST":
+        nome = request.form["nome"]
+        especie = request.form["especie"]
+        raca = request.form["raca"]
+        idade = request.form["idade"]
+        dono_id = request.form["dono_id"]
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO pets (name, species, breed, age, owner_id) VALUES (%s, %s, %s, %s, %s)", (nome, especie, raca, idade, dono_id))
+        db.commit()
+        return redirect(url_for('pets'))
+    # Buscar clientes para selecionar o dono
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT id, name FROM customers")
+    clientes = cursor.fetchall()
+    return render_template("pet_form.html", pet=None, clientes=clientes)
+
+@app.route("/pets/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_pet(id):
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        especie = request.form["especie"]
+        raca = request.form["raca"]
+        idade = request.form["idade"]
+        dono_id = request.form["dono_id"]
+        cursor.execute("UPDATE pets SET name=%s, species=%s, breed=%s, age=%s, owner_id=%s WHERE id=%s", (nome, especie, raca, idade, dono_id, id))
+        db.commit()
+        return redirect(url_for('pets'))
+    cursor.execute("SELECT * FROM pets WHERE id=%s", (id,))
+    pet = cursor.fetchone()
+    cursor.execute("SELECT id, name FROM customers")
+    clientes = cursor.fetchall()
+    return render_template("pet_form.html", pet=pet, clientes=clientes)
+
+@app.route("/pets/excluir/<int:id>", methods=["GET", "POST"])
+@login_required
+def excluir_pet(id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM pets WHERE id=%s", (id,))
+    pet = cursor.fetchone()
+    if request.method == "POST":
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM pets WHERE id=%s", (id,))
+        db.commit()
+        return redirect(url_for('pets'))
+    return render_template("confirmar_exclusao.html", objeto=pet, voltar_url=url_for('pets'))
+
+@app.route("/produtos")
+@login_required
+def produtos():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM products")
+    produtos = cursor.fetchall()
+    # Buscar categorias para cada produto
+    for produto in produtos:
+        cursor.execute("""
+            SELECT pc.name FROM product_categories pc
+            JOIN product_category_relation pcr ON pc.id = pcr.category_id
+            WHERE pcr.product_id = %s
+        """, (produto["id"],))
+        categorias = [c["name"] for c in cursor.fetchall()]
+        produto["categorias"] = categorias
+    return render_template("produtos.html", produtos=produtos)
+
+@app.route("/produtos/novo", methods=["GET", "POST"])
+@login_required
+def novo_produto():
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        descricao = request.form["descricao"]
+        preco = request.form["preco"]
+        estoque = request.form["estoque"]
+        categorias = request.form.getlist("categorias")
+        cursor2 = db.cursor()
+        cursor2.execute("INSERT INTO products (name, description, price, stock) VALUES (%s, %s, %s, %s)", (nome, descricao, preco, estoque))
+        db.commit()
+        produto_id = cursor2.lastrowid
+        for categoria_id in categorias:
+            cursor2.execute("INSERT INTO product_category_relation (product_id, category_id) VALUES (%s, %s)", (produto_id, categoria_id))
+        db.commit()
+        return redirect(url_for('produtos'))
+    cursor.execute("SELECT * FROM product_categories")
+    categorias = cursor.fetchall()
+    return render_template("produto_form.html", produto=None, categorias=categorias, selecionadas=[])
+
+@app.route("/produtos/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_produto(id):
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        descricao = request.form["descricao"]
+        preco = request.form["preco"]
+        estoque = request.form["estoque"]
+        categorias = request.form.getlist("categorias")
+        cursor.execute("UPDATE products SET name=%s, description=%s, price=%s, stock=%s WHERE id=%s", (nome, descricao, preco, estoque, id))
+        cursor.execute("DELETE FROM product_category_relation WHERE product_id=%s", (id,))
+        for categoria_id in categorias:
+            cursor.execute("INSERT INTO product_category_relation (product_id, category_id) VALUES (%s, %s)", (id, categoria_id))
+        db.commit()
+        return redirect(url_for('produtos'))
+    cursor.execute("SELECT * FROM products WHERE id=%s", (id,))
+    produto = cursor.fetchone()
+    cursor.execute("SELECT * FROM product_categories")
+    categorias = cursor.fetchall()
+    cursor.execute("SELECT category_id FROM product_category_relation WHERE product_id=%s", (id,))
+    selecionadas = [str(c["category_id"]) for c in cursor.fetchall()]
+    return render_template("produto_form.html", produto=produto, categorias=categorias, selecionadas=selecionadas)
+
+@app.route("/produtos/excluir/<int:id>", methods=["GET", "POST"])
+@login_required
+def excluir_produto(id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM products WHERE id=%s", (id,))
+    produto = cursor.fetchone()
+    if request.method == "POST":
+        cursor2 = db.cursor()
+        cursor2.execute("DELETE FROM product_category_relation WHERE product_id=%s", (id,))
+        cursor2.execute("DELETE FROM products WHERE id=%s", (id,))
+        db.commit()
+        return redirect(url_for('produtos'))
+    return render_template("confirmar_exclusao.html", objeto=produto, voltar_url=url_for('produtos'))
+
+@app.route("/vendas")
+@login_required
+def vendas():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT s.id, s.date, c.name as cliente, e.name as funcionario
+        FROM sales s
+        LEFT JOIN customers c ON s.customer_id = c.id
+        LEFT JOIN employees e ON s.employee_id = e.id
+        ORDER BY s.date DESC
+    """)
+    vendas = cursor.fetchall()
+    return render_template("vendas.html", vendas=vendas)
+
+@app.route("/vendas/novo", methods=["GET", "POST"])
+@login_required
+def nova_venda():
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        cliente_id = request.form["cliente_id"]
+        funcionario_id = request.form["funcionario_id"]
+        data = request.form["data"]
+        cursor2 = db.cursor()
+        cursor2.execute("INSERT INTO sales (customer_id, employee_id, date) VALUES (%s, %s, %s)", (cliente_id, funcionario_id, data))
+        db.commit()
+        return redirect(url_for('vendas'))
+    cursor.execute("SELECT id, name FROM customers")
+    clientes = cursor.fetchall()
+    cursor.execute("SELECT id, name FROM employees")
+    funcionarios = cursor.fetchall()
+    return render_template("venda_form.html", venda=None, clientes=clientes, funcionarios=funcionarios)
+
+@app.route("/vendas/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_venda(id):
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        cliente_id = request.form["cliente_id"]
+        funcionario_id = request.form["funcionario_id"]
+        data = request.form["data"]
+        cursor.execute("UPDATE sales SET customer_id=%s, employee_id=%s, date=%s WHERE id=%s", (cliente_id, funcionario_id, data, id))
+        db.commit()
+        return redirect(url_for('vendas'))
+    cursor.execute("SELECT * FROM sales WHERE id=%s", (id,))
+    venda = cursor.fetchone()
+    cursor.execute("SELECT id, name FROM customers")
+    clientes = cursor.fetchall()
+    cursor.execute("SELECT id, name FROM employees")
+    funcionarios = cursor.fetchall()
+    return render_template("venda_form.html", venda=venda, clientes=clientes, funcionarios=funcionarios)
+
+@app.route("/vendas/excluir/<int:id>", methods=["GET", "POST"])
+@login_required
+def excluir_venda(id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM sales WHERE id=%s", (id,))
+    venda = cursor.fetchone()
+    if request.method == "POST":
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM sales WHERE id=%s", (id,))
+        db.commit()
+        return redirect(url_for('vendas'))
+    return render_template("confirmar_exclusao.html", objeto=venda, voltar_url=url_for('vendas'))
+
+@app.route("/funcionarios")
+@login_required
+def funcionarios():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM employees")
+    funcionarios = cursor.fetchall()
+    return render_template("funcionarios.html", funcionarios=funcionarios)
+
+@app.route("/funcionarios/novo", methods=["GET", "POST"])
+@login_required
+def novo_funcionario():
+    if request.method == "POST":
+        nome = request.form["nome"]
+        cargo = request.form["cargo"]
+        data_contratacao = request.form["data_contratacao"]
+        salario = request.form["salario"]
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO employees (name, role, hire_date, salary) VALUES (%s, %s, %s, %s)", (nome, cargo, data_contratacao, salario))
+        db.commit()
+        return redirect(url_for('funcionarios'))
+    return render_template("funcionario_form.html", funcionario=None)
+
+@app.route("/funcionarios/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_funcionario(id):
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        cargo = request.form["cargo"]
+        data_contratacao = request.form["data_contratacao"]
+        salario = request.form["salario"]
+        cursor.execute("UPDATE employees SET name=%s, role=%s, hire_date=%s, salary=%s WHERE id=%s", (nome, cargo, data_contratacao, salario, id))
+        db.commit()
+        return redirect(url_for('funcionarios'))
+    cursor.execute("SELECT * FROM employees WHERE id=%s", (id,))
+    funcionario = cursor.fetchone()
+    return render_template("funcionario_form.html", funcionario=funcionario)
+
+@app.route("/funcionarios/excluir/<int:id>", methods=["GET", "POST"])
+@login_required
+def excluir_funcionario(id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM employees WHERE id=%s", (id,))
+    funcionario = cursor.fetchone()
+    if request.method == "POST":
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM employees WHERE id=%s", (id,))
+        db.commit()
+        return redirect(url_for('funcionarios'))
+    return render_template("confirmar_exclusao.html", objeto=funcionario, voltar_url=url_for('funcionarios'))
