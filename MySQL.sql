@@ -9,6 +9,26 @@ CREATE TABLE IF NOT EXISTS Users (
     cash FLOAT NOT NULL DEFAULT 10000.00
 );
 
+-- Customers Table
+CREATE TABLE IF NOT EXISTS Customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    address TEXT
+);
+
+-- Pets Table
+CREATE TABLE IF NOT EXISTS Pets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    species VARCHAR(100),
+    breed VARCHAR(100),
+    age INT,
+    owner_id INT,
+    FOREIGN KEY (owner_id) REFERENCES Customers(id)
+);
+
 -- Transactions Table
 CREATE TABLE IF NOT EXISTS Transactions (
     symbol VARCHAR(100),
@@ -19,31 +39,13 @@ CREATE TABLE IF NOT EXISTS Transactions (
     time DATETIME
 );
 
--- Pets Table
-CREATE TABLE IF NOT EXISTS Pets (
-    symbol VARCHAR(100), 
-    quantity INT, 
-    price FLOAT, 
-    userId INT, 
-    FOREIGN KEY (userId) REFERENCES Users(id)
-);
-
 -- Shares Table
 CREATE TABLE IF NOT EXISTS Shares (
-    symbol VARCHAR(100), 
-    quantity INT, 
+    symbol VARCHAR(100),
+    quantity INT,
     price FLOAT,
     userId INT,
     FOREIGN KEY (userId) REFERENCES Users(id)
-);
-
--- Customers Table
-CREATE TABLE IF NOT EXISTS Customers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100),
-    phone VARCHAR(20),
-    address TEXT
 );
 
 -- Employees Table
@@ -52,7 +54,7 @@ CREATE TABLE IF NOT EXISTS Employees (
     name VARCHAR(100) NOT NULL,
     role VARCHAR(50),
     hire_date DATE,
-    salary DECIMAL(10,2)
+    salary DECIMAL(10, 2)
 );
 
 -- Products Table
@@ -60,7 +62,7 @@ CREATE TABLE IF NOT EXISTS Products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    price DECIMAL(10,2) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
     stock INT DEFAULT 0
 );
 
@@ -80,7 +82,7 @@ CREATE TABLE IF NOT EXISTS Sale_Items (
     sale_id INT,
     product_id INT,
     quantity INT NOT NULL,
-    unit_price DECIMAL(10,2) NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (sale_id) REFERENCES Sales(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
@@ -99,3 +101,16 @@ CREATE TABLE IF NOT EXISTS Product_Category_Relation (
     FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES Product_Categories(id) ON DELETE CASCADE
 );
+
+-- Creating some categories for products
+INSERT INTO product_categories (name)
+VALUES ('Ração'),
+    ('Brinquedos'),
+    ('Acessórios'),
+    ('Higiene'),
+    ('Medicamentos'),
+    ('Camas e Casinhas'),
+    ('Transporte'),
+    ('Petiscos'),
+    ('Coleiras e Guias'),
+    ('Roupas');

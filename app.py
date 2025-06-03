@@ -23,7 +23,7 @@ Session(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password=os.getenv("MYSQL_PASSWORD"),  # Retrieve MySQL password from environment variable
+    password="GFCqy19F5JPTmf!",  # Retrieve MySQL password from environment variable
     database="petplus"
 )
 
@@ -420,19 +420,28 @@ def produtos():
 def novo_produto():
     cursor = db.cursor(dictionary=True)
     if request.method == "POST":
-        nome = request.form["nome"]
-        descricao = request.form["descricao"]
-        preco = request.form["preco"]
-        estoque = request.form["estoque"]
-        categorias = request.form.getlist("categorias")
-        cursor2 = db.cursor()
-        cursor2.execute("INSERT INTO products (name, description, price, stock) VALUES (%s, %s, %s, %s)", (nome, descricao, preco, estoque))
-        db.commit()
-        produto_id = cursor2.lastrowid
-        for categoria_id in categorias:
-            cursor2.execute("INSERT INTO product_category_relation (product_id, category_id) VALUES (%s, %s)", (produto_id, categoria_id))
+        nome = request.form.get("nome")
+        descricao = request.form.get("descricao")
+        preco = request.form.get("preco")
+        estoque = request.form.get("estoque")
+        categorias = request.form.getlist("categorias")  # <-- Aqui pega as categorias marcadas
+
+        # Salvar produto
+        cursor.execute(
+            "INSERT INTO products (name, description, price, stock) VALUES (%s, %s, %s, %s)",
+            (nome, descricao, preco, estoque)
+        )
+        produto_id = cursor.lastrowid
+
+        # Salvar categorias
+        for cat_id in categorias:
+            cursor.execute(
+                "INSERT INTO product_category_relation (product_id, category_id) VALUES (%s, %s)",
+                (produto_id, cat_id)
+            )
         db.commit()
         return redirect(url_for('produtos'))
+
     cursor.execute("SELECT * FROM product_categories")
     categorias = cursor.fetchall()
     return render_template("produto_form.html", produto=None, categorias=categorias, selecionadas=[])
