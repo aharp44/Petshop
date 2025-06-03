@@ -23,7 +23,7 @@ Session(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="admin",           # TROCAR POR SUA SENHA DO MYSQL
+    password="root",           # TROCAR POR SUA SENHA DO MYSQL
     database="petplus"
 )
 
