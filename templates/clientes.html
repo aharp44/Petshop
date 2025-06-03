@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Clientes{% endblock %}
+{% block main %}
+<a href="{{ url_for('novo_cliente') }}" class="btn btn-success mb-3">Novo Cliente</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th><th>Email</th><th>Telefone</th><th>Endereço</th><th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.telefone }}</td>
+            <td>{{ cliente.endereco }}</td>
+            <td>
+                <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{{ url_for('excluir_cliente', id=cliente.id) }}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

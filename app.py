@@ -23,7 +23,7 @@ Session(app)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="root",           # TROCAR POR SUA SENHA DO MYSQL
+    password="GFCqy19F5JPTmf!",           # TROCAR POR SUA SENHA DO MYSQL
     database="petplus"
 )
 
@@ -285,3 +285,56 @@ def sell():
         symbols = db.cursor()
         symbols.execute("SELECT symbol FROM shares WHERE userId = %s", (session["user_id"],))
         return render_template("sell.html", symbols=symbols.fetchall())
+    
+    from flask import url_for
+
+@app.route("/clientes")
+@login_required
+def clientes():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM clientes")
+    clientes = cursor.fetchall()
+    return render_template("clientes.html", clientes=clientes)
+
+@app.route("/clientes/novo", methods=["GET", "POST"])
+@login_required
+def novo_cliente():
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+        endereco = request.form["endereco"]
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO clientes (nome, email, telefone, endereco) VALUES (%s, %s, %s, %s)", (nome, email, telefone, endereco))
+        db.commit()
+        return redirect(url_for('clientes'))
+    return render_template("cliente_form.html", cliente=None)
+
+@app.route("/clientes/editar/<int:id>", methods=["GET", "POST"])
+@login_required
+def editar_cliente(id):
+    cursor = db.cursor(dictionary=True)
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+        endereco = request.form["endereco"]
+        cursor.execute("UPDATE clientes SET nome=%s, email=%s, telefone=%s, endereco=%s WHERE id=%s", (nome, email, telefone, endereco, id))
+        db.commit()
+        return redirect(url_for('clientes'))
+    cursor.execute("SELECT * FROM clientes WHERE id=%s", (id,))
+    cliente = cursor.fetchone()
+    return render_template("cliente_form.html", cliente=cliente)
+
+@app.route("/clientes/excluir/<int:id>", methods=["GET", "POST"])
+@login_required
+def excluir_cliente(id):
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM clientes WHERE id=%s", (id,))
+    cliente = cursor.fetchone()
+    if request.method == "POST":
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM clientes WHERE id=%s", (id,))
+        db.commit()
+        return redirect(url_for('clientes'))
+    return render_template("confirmar_exclusao.html", objeto=cliente, voltar_url=url_for('clientes'))
