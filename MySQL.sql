@@ -11,31 +11,27 @@ CREATE TABLE IF NOT EXISTS Users (
 
 -- Transactions Table
 CREATE TABLE IF NOT EXISTS Transactions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
     symbol VARCHAR(100),
     quantity INT,
     price FLOAT,
     userId INT,
-    time DATETIME,
-    FOREIGN KEY (userId) REFERENCES Users(id)
+    FOREIGN KEY (userId) REFERENCES Users(id),
+    time DATETIME
 );
 
 -- Pets Table
 CREATE TABLE IF NOT EXISTS Pets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    species VARCHAR(100),
-    breed VARCHAR(100),
-    age INT,
-    owner_id INT,
-    FOREIGN KEY (owner_id) REFERENCES Customers(id)
+    symbol VARCHAR(100), 
+    quantity INT, 
+    price FLOAT, 
+    userId INT, 
+    FOREIGN KEY (userId) REFERENCES Users(id)
 );
 
 -- Shares Table
 CREATE TABLE IF NOT EXISTS Shares (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    symbol VARCHAR(100),
-    quantity INT,
+    symbol VARCHAR(100), 
+    quantity INT, 
     price FLOAT,
     userId INT,
     FOREIGN KEY (userId) REFERENCES Users(id)
