@@ -6,13 +6,16 @@
 {% endblock %}
 
 {% block main %}
+<div class="auth-container">
+    <h2>Entrar</h2>
     <form action="/login" method="post">
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Usuário" type="text">
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+            <input class="form-control" name="password" placeholder="Senha" type="password">
         </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
+        <button class="btn btn-primary" type="submit">Entrar</button>
     </form>
+</div>
 {% endblock %}
